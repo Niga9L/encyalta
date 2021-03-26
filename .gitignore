@@ -12,6 +12,8 @@ lerna-debug.log*
 
 # OS
 .DS_Store
+docker.env
+.env
 
 # Tests
 /coverage
