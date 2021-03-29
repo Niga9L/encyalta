@@ -1,22 +1,24 @@
-import { Body, Get, Post } from '@nestjs/common';
+import { Body, Get, Param, Post } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
 import { ArticleService } from './article.service';
+import { Article } from './entitys/article.entity';
 import { CreateArticleDto } from './dto/create-article.dto';
 
 @Controller('/article')
 export class ArticleController {
   constructor(private readonly _articleService: ArticleService) {}
   @Get()
-  async getAll(): Promise<string[]> {
+  getAll() {
     return this._articleService.getAll();
   }
 
+  @Get(':id')
+  getArticleById(@Param('id') id: string) {
+    return this._articleService.getById(id);
+  }
+
   @Post()
-  async create(
-    @Body() createArticleDto: CreateArticleDto,
-  ): Promise<CreateArticleDto> {
-    return this._articleService.save({
-      ...createArticleDto,
-    });
+  async create(@Body() article: CreateArticleDto): Promise<Article> {
+    return await this._articleService.create(article);
   }
 }

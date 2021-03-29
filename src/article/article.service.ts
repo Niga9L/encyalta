@@ -1,13 +1,37 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Article } from './entitys/article.entity';
 import { CreateArticleDto } from './dto/create-article.dto';
 
 @Injectable()
 export class ArticleService {
-  getAll() {
-    return ['Article1', 'Article2'];
+  constructor(
+    @InjectRepository(Article)
+    private _articleRepository: Repository<Article>,
+  ) {}
+  public async getAll() {
+    return await this._articleRepository.find();
   }
 
-  async save(article: CreateArticleDto): Promise<CreateArticleDto> {
-    return article;
+  public async getById(id: string) {
+    const article = await this._articleRepository.findOne(id);
+    if (article) {
+      return article;
+    }
+    throw new HttpException(
+      'Запрашиваемая статья не найдена!',
+      HttpStatus.NOT_FOUND,
+    );
+  }
+
+  public async create(article: CreateArticleDto): Promise<Article> {
+    const newArticle = this._articleRepository.create(article);
+    try {
+      await this._articleRepository.save(newArticle);
+    } catch (e) {
+      throw new HttpException('Произошла ошибка с сохранением статьи!', 406);
+    }
+    return newArticle;
   }
 }

@@ -1,10 +1,10 @@
-import { Column, Entity } from 'typeorm';
+import { Entity, Column } from 'typeorm';
 import { BaseArticleEntity } from '../../database/entities/base-article.entity';
 
-@Entity('article')
+@Entity({ name: 'article' })
 export class Article extends BaseArticleEntity {
   @Column({ type: 'varchar', length: 5000 })
-  public textext: string;
+  public text: string;
 
   @Column({ type: 'varchar', length: 300 })
   public title: string;
@@ -12,9 +12,6 @@ export class Article extends BaseArticleEntity {
   @Column({ type: 'varchar', length: 300 })
   public theme: string;
 
-  @Column({ type: 'number' })
+  @Column({ type: 'numeric' })
   public year: number;
-
-  @Column({ type: 'array' })
-  public tags: string[];
 }
