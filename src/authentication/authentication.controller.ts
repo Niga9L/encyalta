@@ -10,8 +10,9 @@ import {
 import { Response } from 'express';
 import { AuthenticationService } from './authentication.service';
 import { RegisterUserDto } from './dto/register-user.dto';
-import { LocalAuthenticationGuard } from './localAuthentication.guard';
+import { LocalAuthenticationGuard } from './guards/localAuthentication.guard';
 import RequestWithUser from './interfaces/requestWithUser.interface';
+import JwtAuthenticationGuard from './guards/jwt-authentication.guard';
 
 @Controller('auth')
 export class AuthenticationController {
@@ -31,5 +32,15 @@ export class AuthenticationController {
     response.setHeader('Set-Cookie', cookie);
     user.password = undefined;
     return response.send(user);
+  }
+
+  @UseGuards(JwtAuthenticationGuard)
+  @Post('log-out')
+  async logOut(@Req() request: RequestWithUser, @Res() response: Response) {
+    response.setHeader(
+      'Set-Cookie',
+      this._authenticationService.getCookieForLogOut(),
+    );
+    return response.sendStatus(200);
   }
 }
