@@ -3,9 +3,16 @@ import { RegisterUserDto } from './dto/register-user.dto';
 import bcrypt from 'bcrypt';
 import { PostgresErrorCode } from 'src/database/postgresErrorCode.enum';
 import { HttpException, HttpStatus } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import { TokenPayload } from './interfaces/token-payload.interface';
 
 export class AuthenticationService {
-  constructor(private readonly _userService: UserService) {}
+  constructor(
+    private readonly _userService: UserService,
+    private readonly _jwtService: JwtService,
+    private readonly _configService: ConfigService,
+  ) {}
 
   public async register(registrationData: RegisterUserDto) {
     const hashedPassword = await bcrypt.hash(registrationData.password, 10);
@@ -39,6 +46,14 @@ export class AuthenticationService {
     } catch (error) {
       throw new HttpException('Данные не совпали', HttpStatus.BAD_REQUEST);
     }
+  }
+
+  public getCookieWithJwtToken(userId: number) {
+    const payload: TokenPayload = { userId };
+    const token = this._jwtService.sign(payload);
+    return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this._configService.get(
+      'JWT_EXPIRATION_TIME',
+    )}`;
   }
 
   private async verifyPassword(

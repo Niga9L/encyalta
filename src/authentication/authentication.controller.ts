@@ -4,12 +4,14 @@ import {
   HttpCode,
   Post,
   Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { AuthenticationService } from './authentication.service';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { LocalAuthenticationGuard } from './localAuthentication.guard';
-import RequestWithUser from './requestWithUser.interface';
+import RequestWithUser from './interfaces/requestWithUser.interface';
 
 @Controller('auth')
 export class AuthenticationController {
@@ -23,9 +25,11 @@ export class AuthenticationController {
   @HttpCode(200)
   @UseGuards(LocalAuthenticationGuard)
   @Post('log-in')
-  async logIn(@Req() request: RequestWithUser) {
-    const user = request.user;
+  async logIn(@Req() request: RequestWithUser, @Res() response: Response) {
+    const { user } = request;
+    const cookie = this._authenticationService.getCookieWithJwtToken(user.id);
+    response.setHeader('Set-Cookie', cookie);
     user.password = undefined;
-    return user;
+    return response.send(user);
   }
 }
