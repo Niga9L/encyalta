@@ -9,6 +9,7 @@ import JwtAuthenticationGuard from 'src/authentication/guards/jwt-authentication
 export class ArticleController {
   constructor(private readonly _articleService: ArticleService) {}
   @Get()
+  @UseGuards(JwtAuthenticationGuard)
   getAll() {
     return this._articleService.getAll();
   }

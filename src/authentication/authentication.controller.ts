@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   Post,
   Req,
@@ -17,6 +18,14 @@ import JwtAuthenticationGuard from './guards/jwt-authentication.guard';
 @Controller('auth')
 export class AuthenticationController {
   constructor(private readonly _authenticationService: AuthenticationService) {}
+
+  @UseGuards(JwtAuthenticationGuard)
+  @Get()
+  authenticate(@Req() request: RequestWithUser) {
+    const user = request.user;
+    user.password = undefined;
+    return user;
+  }
 
   @Post('register')
   async register(@Body() registrationData: RegisterUserDto) {

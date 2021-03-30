@@ -1,6 +1,6 @@
 import { UserService } from '../users/user.service';
 import { RegisterUserDto } from './dto/register-user.dto';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 import { PostgresErrorCode } from 'src/database/postgresErrorCode.enum';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
