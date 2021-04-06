@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Article } from './entitys/article.entity';
 import { CreateArticleDto } from './dto/create-article.dto';
+import User from '../users/entities/user.entity';
 
 @Injectable()
 export class ArticleService {
@@ -11,7 +12,9 @@ export class ArticleService {
     private _articleRepository: Repository<Article>,
   ) {}
   public async getAll() {
-    return await this._articleRepository.find();
+    return await this._articleRepository.find({
+      relations: ['createdBy'],
+    });
   }
 
   public async getById(id: string) {
@@ -25,8 +28,11 @@ export class ArticleService {
     );
   }
 
-  public async create(article: CreateArticleDto): Promise<Article> {
-    const newArticle = this._articleRepository.create(article);
+  public async create(article: CreateArticleDto, user: User): Promise<Article> {
+    const newArticle = this._articleRepository.create({
+      ...article,
+      createdBy: user,
+    });
     try {
       await this._articleRepository.save(newArticle);
     } catch (e) {

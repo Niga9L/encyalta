@@ -2,11 +2,12 @@ import { UserService } from '../users/user.service';
 import { RegisterUserDto } from './dto/register-user.dto';
 import * as bcrypt from 'bcrypt';
 import { PostgresErrorCode } from 'src/database/postgresErrorCode.enum';
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { TokenPayload } from './interfaces/token-payload.interface';
 
+@Injectable()
 export class AuthenticationService {
   constructor(
     private readonly _userService: UserService,
@@ -44,7 +45,7 @@ export class AuthenticationService {
       user.password = undefined;
       return user;
     } catch (error) {
-      throw new HttpException('Данные не совпали', HttpStatus.BAD_REQUEST);
+      throw new HttpException('Пользователь не найден', HttpStatus.BAD_REQUEST);
     }
   }
 

@@ -1,6 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Article } from '../../article/entitys/article.entity';
 
-@Entity()
+@Entity('user')
 class User {
   @PrimaryGeneratedColumn()
   public id?: number;
@@ -13,6 +14,9 @@ class User {
 
   @Column()
   public password: string;
+
+  @OneToMany(() => Article, (article: Article) => article.createdBy)
+  public articles?: Article[];
 
   @Column({ type: 'varchar', default: 'user' })
   role: string;

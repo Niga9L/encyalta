@@ -3,5 +3,4 @@ export class CreateArticleDto {
   readonly title: string;
   readonly theme: string;
   readonly year: number;
-  readonly tags: string[] | string;
 }
