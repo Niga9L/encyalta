@@ -22,9 +22,7 @@ export class AuthenticationController {
   @UseGuards(JwtAuthenticationGuard)
   @Get()
   authenticate(@Req() request: RequestWithUser) {
-    const user = request.user;
-    user.password = undefined;
-    return user;
+    return request.user;
   }
 
   @Post('register')
@@ -37,9 +35,10 @@ export class AuthenticationController {
   @Post('login')
   async logIn(@Req() request: RequestWithUser, @Res() response: Response) {
     const { user } = request;
-    const cookie = this._authenticationService.getCookieWithJwtToken(user.id);
+    const cookie = this._authenticationService.getCookieWithJwtToken(
+      user.userId,
+    );
     response.setHeader('Set-Cookie', cookie);
-    user.password = undefined;
     return response.send(user);
   }
 

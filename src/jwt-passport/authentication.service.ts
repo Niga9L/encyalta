@@ -6,10 +6,12 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { TokenPayload } from './interfaces/token-payload.interface';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class AuthenticationService {
   constructor(
+    private readonly _authService: AuthService,
     private readonly _userService: UserService,
     private readonly _jwtService: JwtService,
     private readonly _configService: ConfigService,
@@ -18,7 +20,7 @@ export class AuthenticationService {
   public async register(registrationData: RegisterUserDto) {
     const hashedPassword = await bcrypt.hash(registrationData.password, 10);
     try {
-      const createUser = await this._userService.create({
+      const createUser = await this._authService.create({
         ...registrationData,
         password: hashedPassword,
       });
@@ -40,12 +42,12 @@ export class AuthenticationService {
 
   public async getAuthenticatedUser(email: string, plainTextPassword: string) {
     try {
-      const user = await this._userService.getByEmail(email);
-      await this.verifyPassword(plainTextPassword, user.password);
-      user.password = undefined;
-      return user;
+      const auth = await this._authService.getByEmail(email);
+      await this.verifyPassword(plainTextPassword, auth.password);
+      auth.password = undefined;
+      return { ...auth, user: undefined, userId: auth.user.id };
     } catch (error) {
-      throw new HttpException('Пользователь не найден', HttpStatus.BAD_REQUEST);
+      throw new HttpException('Данные не совпали', HttpStatus.BAD_REQUEST);
     }
   }
 

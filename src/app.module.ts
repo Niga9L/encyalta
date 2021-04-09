@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import * as Joi from '@hapi/joi';
 import { DatabaseModule } from './database/database.module';
 import { ArticleModule } from './article/article.module';
-import { AuthenticationModule } from './authentication/authentication.module';
+import { AuthenticationModule } from './jwt-passport/authentication.module';
 
 @Module({
   imports: [

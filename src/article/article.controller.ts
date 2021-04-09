@@ -3,7 +3,7 @@ import { Controller } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { Article } from './entitys/article.entity';
 import { CreateArticleDto } from './dto/create-article.dto';
-import JwtAuthenticationGuard from 'src/authentication/guards/jwt-authentication.guard';
+import JwtAuthenticationGuard from 'src/jwt-passport/guards/jwt-authentication.guard';
 
 @Controller('/article')
 export class ArticleController {
