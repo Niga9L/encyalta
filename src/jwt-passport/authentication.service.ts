@@ -45,7 +45,7 @@ export class AuthenticationService {
       const auth = await this._authService.getByEmail(email);
       await this.verifyPassword(plainTextPassword, auth.password);
       auth.password = undefined;
-      return { ...auth, user: undefined, userId: auth.user.id };
+      return auth;
     } catch (error) {
       throw new HttpException('Данные не совпали', HttpStatus.BAD_REQUEST);
     }

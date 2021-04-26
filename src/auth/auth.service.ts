@@ -19,6 +19,7 @@ export class AuthService {
       where: { email },
       relations: ['user'],
     });
+    console.log(user);
     if (user) {
       return user;
     }
@@ -29,8 +30,9 @@ export class AuthService {
   }
 
   async getById(id: number) {
-    const user = this._authRepository.findOne({ id });
+    const user = await this._authRepository.findOne({ id });
     if (user) {
+      user.password = undefined;
       return user;
     }
     throw new HttpException('Пользователь не найден', HttpStatus.NOT_FOUND);

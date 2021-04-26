@@ -1,9 +1,7 @@
 import { Request } from 'express';
-import User from '../../users/entities/user.entity';
+import Auth from '../../auth/entitys/auth.entity';
 
-type UserRequest = {
-  userId: number;
-} & User;
+type UserRequest = Auth;
 
 interface RequestWithUser extends Request {
   user: UserRequest;
