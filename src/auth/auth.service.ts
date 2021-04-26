@@ -19,7 +19,6 @@ export class AuthService {
       where: { email },
       relations: ['user'],
     });
-    console.log(user);
     if (user) {
       return user;
     }
